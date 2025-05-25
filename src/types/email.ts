@@ -10,6 +10,35 @@ export interface EmailMetadata {
   headers: Record<string, string>
 }
 
+export interface EmailResponse {
+  id: string
+  threadId: string
+  subject: string
+  from: string
+  to: string[]
+  cc: string[]
+  bcc: string[]
+  receivedAt: string
+  headers: Record<string, string>
+  textContent?: string
+  htmlContent?: string
+  attachments: Attachment[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Attachment {
+  id: string
+  emailId: string
+  filename: string
+  mimeType: string
+  size: number
+  driveFileId: string
+  driveFileUrl: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface EmailContent {
   textContent?: string
   htmlContent?: string
@@ -38,4 +67,8 @@ export interface OAuthToken {
   refreshToken: string
   expiryDate: Date
   scope: string
+}
+
+export type TransformedEmail = Omit<EmailResponse, "receivedAt"> & {
+  receivedAt: Date
 }

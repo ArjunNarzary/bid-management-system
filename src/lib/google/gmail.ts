@@ -4,7 +4,7 @@ import { prisma } from "../prisma"
 import { EmailAttachment, EmailContent, EmailMetadata } from "@/types/email"
 import Stream from "node:stream"
 
-export async function fetchEmails(): Promise<void> {
+export async function fetchEmailsFromGmail(): Promise<void> {
   const session = await auth()
 
   if (!session?.accessToken || !session?.user?.email) {
@@ -37,14 +37,13 @@ export async function fetchEmails(): Promise<void> {
 
     const response = await gmail.users.messages.list({
       userId: "me",
-      maxResults: 20,
+      maxResults: 100,
       q: unixTimestamps ? `after:${unixTimestamps}` : undefined,
     })
 
     const messages = response.data.messages || []
 
     // Insert into database
-
     for (const message of messages) {
       const email = await gmail.users.messages.get({
         userId: "me",
