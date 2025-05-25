@@ -1,17 +1,19 @@
-// import { auth } from "@/lib/auth"
-// import { fetchEmails } from "@/lib/google/gmail"
+import { auth } from "@/lib/auth"
+import EmailTable from "./_components/EmailTable"
 import { logout } from "@/server/actions/authAction"
 
 export default async function Home() {
-  // const session = await auth()
-  // await fetchEmails()
-  // console.log(session)
+  const session = await auth()
+  if (!session?.user || !session?.user?.email) {
+    logout()
+    return
+  }
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full">
-      <form action={logout}>
-        <button>Logout</button>
-      </form>
-      Home Page
+    <div className="h-screen w-full">
+      <div>
+        <h1>Emails</h1>
+      </div>
+      <EmailTable email={session?.user.email} />
     </div>
   )
 }

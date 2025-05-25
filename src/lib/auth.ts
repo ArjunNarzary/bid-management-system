@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google"
 import { JWT } from "next-auth/jwt"
 
 declare module "next-auth" {
-  interface Session {
+  export interface Session {
     accessToken?: string
     refreshToken?: string
     expiresAt?: number
