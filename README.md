@@ -85,5 +85,3 @@ This system automatically archives emails from a G-Suite inbox using Gmail API a
 - No token or refresh are stored
 - All API endpoints are protected
 - File attachments are stored in a dedicated Google Drive folder
-
-## License

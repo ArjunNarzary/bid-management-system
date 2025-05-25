@@ -1,9 +1,8 @@
-import NextAuth from "next-auth"
+import NextAuth, { DefaultSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
-import { JWT } from "next-auth/jwt"
 
 declare module "next-auth" {
-  export interface Session {
+  interface Session extends DefaultSession {
     accessToken?: string
     refreshToken?: string
     expiresAt?: number
@@ -13,15 +12,6 @@ declare module "next-auth" {
       email?: string | null
       image?: string | null
     }
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    accessToken?: string
-    refreshToken?: string
-    expiresAt?: number
-    id?: string
   }
 }
 
@@ -60,9 +50,9 @@ export const {
   callbacks: {
     jwt: async ({ token, account, profile }) => {
       if (account) {
-        token.accessToken = account.access_token
-        token.refreshToken = account.refresh_token
-        token.expiresAt = account.expires_at
+        token.accessToken = account.access_token as string
+        token.refreshToken = account.refresh_token as string
+        token.expiresAt = account.expires_at as number
         if (profile?.sub) {
           token.id = profile.sub
         }
@@ -71,11 +61,11 @@ export const {
     },
     session: async ({ session, token }) => {
       if (token) {
-        session.accessToken = token.accessToken
-        session.refreshToken = token.refreshToken
-        session.expiresAt = token.expiresAt
+        session.accessToken = token.accessToken as string
+        session.refreshToken = token.refreshToken as string
+        session.expiresAt = token.expiresAt as number
         if (token.id) {
-          session.user.id = token.id
+          session.user.id = token.id as string
         }
       }
       return session

@@ -80,7 +80,7 @@ export async function fetchEmailsFromGmail(): Promise<void> {
   }
 }
 
-function extractMetadata(message: any): EmailMetadata {
+function extractMetadata(message): EmailMetadata {
   const headers = message.payload.headers
   const metadata: EmailMetadata = {
     id: message.id,
@@ -125,10 +125,10 @@ function extractMetadata(message: any): EmailMetadata {
   return metadata
 }
 
-function extractContent(message: any): EmailContent {
+function extractContent(message): EmailContent {
   const content: EmailContent = {}
 
-  function processPart(part: any) {
+  function processPart(part) {
     if (part.mimeType === "text/plain") {
       content.textContent = Buffer.from(part.body.data, "base64").toString()
     } else if (part.mimeType === "text/html") {
@@ -145,7 +145,7 @@ function extractContent(message: any): EmailContent {
 }
 
 async function processAttachments(
-  message: any,
+  message,
   token: string,
   refreshToken?: string
 ): Promise<EmailAttachment[]> {
@@ -159,7 +159,7 @@ async function processAttachments(
   const drive = google.drive({ version: "v3", auth: oauth2Client })
   const gmail = google.gmail({ version: "v1", auth: oauth2Client })
 
-  async function processPart(part: any) {
+  async function processPart(part) {
     if (part.filename && part.filename.length > 0) {
       const attachment: EmailAttachment = {
         id: part.body.attachmentId!,
