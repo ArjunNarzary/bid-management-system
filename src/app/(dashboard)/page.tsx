@@ -58,7 +58,6 @@ export default function DashboardPage() {
     setIsSyncing(true)
     try {
       const response = await fetch("/api/sync")
-      console.log("res", response.ok)
       if (!response.ok) {
         throw new Error("Failed to sync emails")
       }
