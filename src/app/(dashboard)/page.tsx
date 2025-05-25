@@ -33,27 +33,6 @@ export default function DashboardPage() {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
-  const fetchEmails = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      const response = await fetch(
-        `/api/emails?page=${
-          pageIndex + 1
-        }&limit=${pageSize}&search=${debouncedSearchQuery}`
-      )
-      if (!response.ok) {
-        throw new Error("Failed to fetch emails")
-      }
-      const responseData = await response.json()
-      setData(responseData)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const syncEmails = async () => {
     setIsSyncing(true)
     try {
@@ -70,14 +49,35 @@ export default function DashboardPage() {
 
   // Initial fetch
   useEffect(() => {
+    const fetchEmails = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const response = await fetch(
+          `/api/emails?page=${
+            pageIndex + 1
+          }&limit=${pageSize}&search=${debouncedSearchQuery}`
+        )
+        if (!response.ok) {
+          throw new Error("Failed to fetch emails")
+        }
+        const responseData = await response.json()
+        setData(responseData)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred")
+      } finally {
+        setIsLoading(false)
+      }
+    }
     fetchEmails()
   }, [pageIndex, pageSize, debouncedSearchQuery])
 
   // Polling every 5 minutes
   useEffect(() => {
+    syncEmails()
     const interval = setInterval(() => {
       syncEmails()
-    }, 1 * 60 * 1000) // 5 minutes in milliseconds
+    }, 5 * 60 * 1000) // 5 minutes in milliseconds
 
     return () => clearInterval(interval)
   }, []) // Empty dependency array means this effect runs once on mount
@@ -96,7 +96,7 @@ export default function DashboardPage() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    console.log("Something went wrong. Please try again.")
   }
 
   const transformedEmails: TransformedEmail[] =
